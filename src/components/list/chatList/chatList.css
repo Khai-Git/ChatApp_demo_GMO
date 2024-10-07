@@ -1,0 +1,50 @@
+.chatList {
+    flex: 1;
+
+    .search {
+        gap: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+
+        .searchBar {
+            flex: 1;
+            background-color: rgba(17, 25, 40, 0.5);
+            gap: 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+
+            img {
+                width: 20px;
+                height: 20px;
+            }
+
+            input {
+                background-color: transparent;
+                border: none;
+                outline: none;
+                color: white;
+                flex: 1;
+                padding: 10px;
+            }
+        }
+
+        .add {
+            width: 35px;
+            background-color: rgba(17, 25, 40, 0.5);
+            padding: 5px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+    }
+
+    .item {
+        display: flex;
+        align-self: center;
+        gap: 20px;
+        padding: 20px;
+        cursor: pointer;
+    }
+}
