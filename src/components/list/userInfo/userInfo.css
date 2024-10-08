@@ -1,6 +1,7 @@
 .userInfo {
     flex: 1;
-    padding: 20px;
+    padding: 0px 10px;
+    padding-top: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;

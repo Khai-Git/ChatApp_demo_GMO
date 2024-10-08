@@ -3,14 +3,14 @@
 
     .search {
         gap: 20px;
-        padding: 20px;
+        padding: 15px;
         display: flex;
         align-items: center;
 
         .searchBar {
             flex: 1;
             background-color: rgba(17, 25, 40, 0.5);
-            gap: 20px;
+            gap: 10px;
             border-radius: 15px;
             display: flex;
             align-items: center;
@@ -27,7 +27,7 @@
                 outline: none;
                 color: white;
                 flex: 1;
-                padding: 10px;
+                padding: 0px 10px;
             }
         }
 
@@ -40,11 +40,53 @@
         }
     }
 
-    .item {
-        display: flex;
-        align-self: center;
-        gap: 20px;
-        padding: 20px;
-        cursor: pointer;
+    .items {
+        overflow-y: scroll;
+        scroll-behavior: smooth;
+        height: 67.5vh;
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 10px 10px;
+            cursor: pointer;
+            border-top: 1px solid rgba(204, 204, 204, 0.293);
+            border-bottom: 1px solid rgba(204, 204, 204, 0.293);
+
+            img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50px;
+            }
+
+            .texts {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+
+                span {
+                    font-weight: 500;
+                }
+
+                p {
+                    margin: 0;
+                    font-size: 1rem;
+                    font-weight: 300;
+                }
+            }
+        }
+
+        .item::before {
+            background-color: transparent;
+        }
+
+        .item:hover {
+            background-color: rgba(150, 150, 150, 0.242);
+        }
+
+        .item.selected {
+            background-color: rgba(255, 255, 255, 0.378);
+        }
     }
 }
