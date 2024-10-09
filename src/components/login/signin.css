@@ -1,3 +1,60 @@
-.signin {
-    flex: 1;
+.login {
+    display: flex;
+    align-items: center;
+    overflow-y: auto;
+
+    .signin {
+        flex: 1;
+        width: 70vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        >* {
+            padding: 10px 0px;
+        }
+
+        .header {
+            width: 10vw;
+            height: auto;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+
+            .title {
+                padding: 10px 0px;
+            }
+
+            .input {
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+                gap: 10px;
+
+                input {
+                    padding: 10px;
+                    border: 1px solid rgba(161, 161, 161, 0.589);
+                    border-radius: 20px;
+                    background-color: rgba(255, 255, 255, 0.5);
+                }
+            }
+        }
+
+        .footer {
+            width: 50%;
+
+            .submit {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-content: center;
+            }
+        }
+    }
 }

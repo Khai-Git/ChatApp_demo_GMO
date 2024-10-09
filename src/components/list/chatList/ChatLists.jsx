@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 
 import "./chatList.css";
+import AddUser from "./addUser/AddUser";
 
 const ChatList = () => {
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [addMode, setAddMode] = useState(false);
 
   const handleSelect = (index) => {
-    setSelectedItem(index);
+    setSelected(index);
   };
 
   const chatItems = [
@@ -29,14 +31,14 @@ const ChatList = () => {
           <img src="./search.png" alt="Search Icon" />
           <input type="text" placeholder="Search" />
         </div>
-        <img className="add" src={selectedItem !== null ? "./minus.png" : "./plus.png"} alt="Toggle Add" />
+        <img className="add" src={addMode ? "./minus.png" : "./plus.png"} alt="Toggle Add" onClick={() => setAddMode((state)=>!state)} />
       </div>
 
       <div className="items">
         {chatItems.map((item, index) => (
           <div
             key={item.id}
-            className={`item ${selectedItem === index ? 'selected' : ''}`}
+            className={`item ${selected === index ? 'selected' : ''}`}
             onClick={() => handleSelect(index)}
           >
             <img src={item.img} alt="Profile" />
@@ -47,6 +49,9 @@ const ChatList = () => {
           </div>
         ))}
       </div>
+      {
+        addMode && <AddUser />
+      }
     </div>
   );
 };

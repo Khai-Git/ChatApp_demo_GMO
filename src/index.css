@@ -2,8 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+
+  a {
+    text-decoration: none;
+  }
 }
 
 body {
@@ -28,6 +30,6 @@ body {
   overflow: hidden;
 
   > * {
-    border-right: 1px solid rgba(210, 210, 210, 0.383);
+    /* border-right: 1px solid rgba(210, 210, 210, 0.383); */
   }
 }
