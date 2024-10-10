@@ -4,12 +4,13 @@ import { auth, db } from "../lib/firebase";
 import Upload from "../lib/upload";
 import { doc, setDoc } from "firebase/firestore";
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 import "./signin.css";
 import "./signup.css";
 
-const Signin = () => {
+const Login = () => {
+    const [loading, setLoading] = useState(false);
     const [avatar, setAvatar] = useState({
         file: null,
         url: "",
@@ -23,22 +24,46 @@ const Signin = () => {
         })
     }
 
-    const handleLogin = e => {
-        e.preventDefault()
-        toast.warn("Error")
+    const handleLogin = async e => {
+        e.preventDefault();
+        setLoading(true);
+
+        const formData = new FormData(e.target);
+        const { email, password } = Object.fromEntries(formData);
+
+        if (!email || !password) {
+            toast.warn("Please fill in both email and password.");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            toast.success("Đăng nhập thành công")
+        } catch (err) {
+            toast.warn(err.message)
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleRegister = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        setLoading(true);
         const formData = new FormData(e.target);
 
         const { email, username, password } = Object.fromEntries(formData);
-        console.log(username);
+        // console.log(username);
 
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password);
 
-            const imgURL = await Upload(avatar.file)
+            let imgURL = './default-avatar.png'; // Default avatar URL if none is uploaded
+
+            // Check if an avatar file is selected
+            if (avatar.file) {
+                imgURL = await Upload(avatar.file);
+            }
 
             await setDoc(doc(db, "users", res.user.uid), {
                 username,
@@ -55,6 +80,8 @@ const Signin = () => {
             toast.success("Đăng ký thành công")
         } catch (error) {
             toast.error(error.message)
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -75,15 +102,15 @@ const Signin = () => {
                                 <h2>Chào mừng</h2>
                             </div>
                             <form className="input" onSubmit={handleLogin}>
-                                <input type="text" placeholder="Tên đăng nhập" required />
-                                <input type="password" placeholder="Mật khẩu" required />
-                                <button type="submit" className="btn btn-primary">Đăng nhập</button>
+                                <input type="text" name="email" placeholder="Tên đăng nhập" required />
+                                <input type="password" name="password" placeholder="Mật khẩu" required />
+                                <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? "Loading" : "Đăng nhập"}</button>
                             </form>
                         </div>
                         <div className="footer">
                             <div className="submit">
                                 <hr />
-                                <button className="btn btn-success" onClick={toggleSignup} >Đăng ký</button>
+                                <button className="btn btn-success" onClick={toggleSignup} disabled={loading}>{loading ? "Loading" : "Đăng ký"}</button>
                             </div>
                         </div>
                     </div>
@@ -111,11 +138,11 @@ const Signin = () => {
                                     </label>
                                 </label>
                                 <input type="file" id="file" onChange={handleAvatar} style={{ display: "none" }} />
-                                <button type="submit" className="btn btn-success">Đăng ký</button>
+                                <button type="submit" className="btn btn-success" disabled={loading}>{loading ? "Loading" : "Đăng ký"}</button>
                             </form>
                         </div>
                         <div className="footer">
-                            <p>Đã có tài khoản ?  <a href="#" onClick={toggleSignup}>Đăng nhập</a></p>
+                            <p>Đã có tài khoản ?  <a onClick={toggleSignup} disabled={loading}>{loading ? "Loading" : "Đăng nhập"}</a></p>
                         </div>
                     </div>
                 )
@@ -124,4 +151,4 @@ const Signin = () => {
     );
 }
 
-export default Signin;
+export default Login;

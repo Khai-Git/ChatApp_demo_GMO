@@ -1,5 +1,6 @@
 .chatList {
     flex: 1;
+    height: 78vh;
 
     .search {
         gap: 20px;
@@ -43,7 +44,7 @@
     .items {
         overflow-y: scroll;
         scroll-behavior: smooth;
-        height: 67.5vh;
+        height: 67vh;
 
         .item {
             display: flex;

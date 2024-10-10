@@ -1,28 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./chatList.css";
 import AddUser from "./addUser/AddUser";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+import useUserStore from "../../lib/userStore";
+import useChatStore from "../../lib/chatStore";
 
 const ChatList = () => {
   const [selected, setSelected] = useState(null);
+  const [chats, setChats] = useState([]);
   const [addMode, setAddMode] = useState(false);
 
-  const handleSelect = (index) => {
+  const { currentUser } = useUserStore();
+  const { chatId, changeChat } = useChatStore();
+
+  console.log(chatId);
+  
+
+  const handleSelect = async (chat) => {
+    changeChat(chat.chatId, chat.user);
+  };
+
+  const handleSelectChat = (index) => {
     setSelected(index);
   };
 
-  const chatItems = [
-    { id: 1, img: "./avatar.png", name: 'Kelvin Klein', message: 'Hello' },
-    { id: 2, img: "./avatar.png", name: 'Pam Beesly', message: 'Just checking in.' },
-    { id: 3, img: "./avatar.png", name: 'Jim Halpert', message: 'Sounds good!' },
-    { id: 4, img: "./avatar.png", name: 'Dwight Schrute', message: 'Question!' },
-    { id: 5, img: "./avatar.png", name: 'Angela Martin', message: 'On my way.' },
-    { id: 6, img: "./avatar.png", name: 'Ryan Howard', message: 'Let’s talk later.' },
-    { id: 7, img: "./avatar.png", name: 'Kelly Kapoor', message: 'OMG, guess what?' },
-    { id: 8, img: "./avatar.png", name: 'Stanley Hudson', message: 'Not now.' },
-    { id: 9, img: "./avatar.png", name: 'Oscar Martinez', message: 'Looking forward to it.' },
-    { id: 10, img: "./avatar.png", name: 'Phyllis Vance', message: 'Sounds perfect!' },
-  ];
+  useEffect(() => {
+    
+    const unSub = onSnapshot(
+      doc(db, "userchats", currentUser.id),
+      async (res) => {
+      const items = res.data()?.chats || []; // Safely handle undefined data
+
+      const promises = items.map(async (item) => {
+        const receiverId = item.receiverId || item.reveiveId; // Fallback to 'reveiveId'
+
+        if (!receiverId) {
+          console.warn('Missing receiverId in chat item:', item);
+          return null; // Skip if no valid receiverId
+        }
+
+        try {
+          const userDocRef = doc(db, "users", receiverId);
+          const userDocSnap = await getDoc(userDocRef);
+          const user = userDocSnap.data();
+          return { ...item, user };
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          return null; // Skip failed user data fetch
+        }
+      });
+
+      const chatData = (await Promise.all(promises)).filter(chat => chat !== null); // Filter out null values
+      setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
+    });
+
+    return () => {
+      unSub();
+    };
+  }, [currentUser.id]);
+
+
+  // console.log(chats);
 
   return (
     <div className="chatList">
@@ -31,23 +71,25 @@ const ChatList = () => {
           <img src="./search.png" alt="Search Icon" />
           <input type="text" placeholder="Search" />
         </div>
-        <img className="add" src={addMode ? "./minus.png" : "./plus.png"} alt="Toggle Add" onClick={() => setAddMode((state)=>!state)} />
+        <img className="add" src={addMode ? "./minus.png" : "./plus.png"} alt="Toggle Add" onClick={() => setAddMode((state) => !state)} />
       </div>
 
       <div className="items">
-        {chatItems.map((item, index) => (
-          <div
-            key={item.id}
-            className={`item ${selected === index ? 'selected' : ''}`}
-            onClick={() => handleSelect(index)}
-          >
-            <img src={item.img} alt="Profile" />
-            <div className="texts">
-              <span>{item.name}</span>
-              <p>{item.message}</p>
+        {
+          chats.map((chat, index) => (
+            <div 
+            className={`item ${selected === index ? 'selected' : ''}`} 
+            key={chat.chatId || `chat-${index}`} // Fallback to `index` if `chatId` is missing
+            onClick={() => {handleSelectChat(index); handleSelect(chat)}}
+            >
+              <img src={chat.user.avatar}/>
+              <div className="texts">
+                <span>{chat.user.username}</span>
+                <p>{chat.lastMessage}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        }
       </div>
       {
         addMode && <AddUser />

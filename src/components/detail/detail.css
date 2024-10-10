@@ -25,9 +25,11 @@
         flex-direction: column;
         max-height: 10vh;
         gap: 15px;
+        padding: 10px;
         
         .quick-option {
             display: flex;
+            justify-content: center;
             gap: 20px;
 
             .title {
@@ -48,6 +50,7 @@
         }
 
         .option {
+
             .title {
                 display: flex;
                 align-items: center;
@@ -63,10 +66,12 @@
                 .photoItem {
                     .photoDetail {
                         padding: 10px 5px;
+                        height: 28vh;
+                        overflow-y: auto;
                         
                         img {
-                            width: 80px;
-                            height: 80px;
+                            width: 75px;
+                            height: 75px;
                             margin: 5px 0px;
                             margin-right: 10px;
                             border: 1px solid rgba(179, 179, 179, 0.594);

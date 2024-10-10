@@ -45,6 +45,9 @@ const Detail = () => {
                                 <img src="./bg.jpg" alt="" />
                                 <img src="./bg.jpg" alt="" />
                                 <img src="./bg.jpg" alt="" />
+                                <img src="./bg.jpg" alt="" />
+                                <img src="./bg.jpg" alt="" />
+                                <img src="./bg.jpg" alt="" />
                             </div>
                         </div>
                     </div>

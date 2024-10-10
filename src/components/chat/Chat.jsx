@@ -1,21 +1,42 @@
 import "./Chat.css";
 
+import { useEffect, useRef, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "../lib/firebase";
+import useChatStore from "../lib/chatStore";
+
 import EmojiPicker from "emoji-picker-react";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { useEffect, useRef, useState } from "react";
 
 const Chat = () => {
+    const [chat, setChat] = useState();
     const [open, setOpen] = useState(false);
     const [text, setText] = useState("");
+
+    const { chatId } = useChatStore();
 
     const endRef = useRef(null);
 
     useEffect(() => {
         endRef.current?.scrollIntoView({ behavior: "smooth" })
     }, [text]);
+
+    useEffect(() => {
+        const unSub = onSnapshot(
+            doc(db, "chats", chatId), (res) => {
+                setChat(res.data())
+            }
+        )
+
+        return () => {
+            unSub();
+        };
+    }, [chatId])
+
+    // console.log(chat);
 
     const handleEmoji = (e) => {
         setText((state) => state + e.emoji);
@@ -45,37 +66,27 @@ const Chat = () => {
             </div>
 
             <div className="main">
-                <div className="message">
-                    <div className="avatar">
-                        <img src="./avatar.png" alt="" />
+                {chat?.message?.map((message) => (
+                    <div className="message user" key={message?.createAt}>
+                        <div className="textAndTime">
+                            {message.img && <img src={message.img} alt="" />}
+                            <p>{message.text}</p>
+                            {/* <span>{message || "1 min ago"}</span> */}
+                        </div>
                     </div>
-                    <div className="textAndTime">
-                        <p>Lorem ipsum dolor</p>
-                        <span>1 min ago</span>
+                ))}
+                {/* {chat.message.map((message) => (
+                    <div className="message">
+                        <div className="avatar">
+                            <img src="./avatar.png" alt="" />
+                        </div>
+                        <div className="textAndTime">
+                            <p>Lorem ipsum dolor</p>
+                            <span>1 min ago</span>
+                        </div>
                     </div>
-                </div>
-                <div className="message user">
-                    <div className="textAndTime">
-                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere tempora nesciunt quibusdam! Dolorum repellat maxime ratione nulla. Hic molestias excepturi sint dolor ab odit nam, quis sapiente quam repudiandae itaque!</p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className="message">
-                    <div className="avatar">
-                        <img src="./avatar.png" alt="" />
-                    </div>
-                    <div className="textAndTime">
-                        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className="message user">
-                    <div className="textAndTime">
-                        <img src="./bg.jpg" alt="" />
-                        <p>Lorem </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
+                ))} */}
+
                 <div ref={endRef}></div>
             </div>
 
