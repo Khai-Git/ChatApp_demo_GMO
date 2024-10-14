@@ -45,6 +45,9 @@
         overflow-y: scroll;
         scroll-behavior: smooth;
         height: 67vh;
+        flex-wrap: wrap;
+        flex-basis: 350px;
+        max-width: 350px;
 
         .item {
             display: flex;

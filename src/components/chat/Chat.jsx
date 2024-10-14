@@ -17,6 +17,10 @@ const Chat = () => {
     const [chat, setChat] = useState();
     const [open, setOpen] = useState(false);
     const [text, setText] = useState("");
+    const [img, setImg] = useState({
+        file: null,
+        url: "",
+    });
 
     const { chatId, user } = useChatStore();
     const { currentUser } = useUserStore();
@@ -42,12 +46,22 @@ const Chat = () => {
         setOpen(false);
     };
 
+    const handleImg = (e) => {
+        if (e.target.files[0]) {
+            setImg({
+                file: e.target.files[0],
+                url: URL.createObjectURL(e.target.files[0])
+            })
+
+        }
+    }
+
     const handleSend = async () => {
         if (text === "") return;
 
         try {
             await updateDoc(doc(db, "chats", chatId), {
-                message: arrayUnion({
+                messages: arrayUnion({
                     senderId: currentUser.id,
                     text,
                     createAt: new Date(),
@@ -106,7 +120,7 @@ const Chat = () => {
             </div>
 
             <div className="main">
-                {chat?.message?.map((message, index) => (
+                {chat?.messages?.map((message, index) => (
                     <div
                         className={message.senderId === currentUser.id ? "message user" : "message other"}
                         key={index}
@@ -125,7 +139,10 @@ const Chat = () => {
 
             <div className="footer">
                 <div className="icons">
-                    <img src="./img.png" alt="" />
+                    <label htmlFor="file">
+                        <img src="./img.png" alt="" />
+                    </label>
+                    <input type="file" id="file" style={{ display: "none" }} onChange={handleImg}/>
                     <img src="./camera.png" alt="" />
                     <img src="./mic.png" alt="" />
                 </div>

@@ -32,12 +32,12 @@
                 .status-icon {
                     font-size: 0.8rem;
                 }
-                
+
                 .status-icon.online i {
                     color: green;
                     margin-right: 10px;
                 }
-                
+
                 .status-icon.offline i {
                     color: red;
                     margin-right: 10px;
@@ -67,6 +67,7 @@
             background-color: #efefef8a;
             max-width: 70%;
             display: flex;
+            width: fit-content;
             gap: 20px;
             padding: 15px;
             border-radius: 15px;
@@ -91,9 +92,13 @@
                     border-radius: 15px;
                     object-fit: cover;
                 }
-                
+
                 p {
                     font-size: 0.85rem;
+                    max-width: 350px;
+                    word-wrap: break-word;
+                    white-space: pre-wrap;
+                    overflow-wrap: break-word;
                 }
 
                 span {
