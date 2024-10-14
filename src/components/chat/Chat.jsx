@@ -75,17 +75,6 @@ const Chat = () => {
                         </div>
                     </div>
                 ))}
-                {/* {chat.message.map((message) => (
-                    <div className="message">
-                        <div className="avatar">
-                            <img src="./avatar.png" alt="" />
-                        </div>
-                        <div className="textAndTime">
-                            <p>Lorem ipsum dolor</p>
-                            <span>1 min ago</span>
-                        </div>
-                    </div>
-                ))} */}
 
                 <div ref={endRef}></div>
             </div>

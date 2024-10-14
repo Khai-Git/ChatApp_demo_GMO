@@ -1,41 +1,38 @@
 import React, { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from "../src/components/lib/firebase";
-import useUserStore from "../src/components/lib/userStore"; // default import
-
 import LogIn from "./components/login/Login";
 import Chat from "./components/chat/Chat";
 import Detail from "./components/detail/Detail";
 import List from "./components/list/List";
 import Notification from './components/notification/Notification';
+
+import { auth } from "./components/lib/firebase";
+import useUserStore from "./components/lib/userStore";
 import useChatStore from './components/lib/chatStore';
 
 const App = () => {
 
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
   const { chatId } = useChatStore();
-  
+
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, (user) => {
       if (user) {
         fetchUserInfo(user.uid); // Fetch user info if authenticated
       } else {
         // If not logged in, make sure isLoading is false
-        fetchUserInfo(null); 
+        fetchUserInfo(null);
       }
     }, (error) => {
       console.error("Error in auth state change:", error);
       // Ensure loading state is false even if there's an error
-      fetchUserInfo(null); 
+      fetchUserInfo(null);
     });
-  
+
     return () => {
       unSub();
     }
-  }, [fetchUserInfo]);
-
-  // console.log(currentUser);
-  
+  }, [fetchUserInfo]);  
 
   if (isLoading) return <div className='loading'>Loading...</div>;
 
@@ -45,8 +42,14 @@ const App = () => {
         currentUser ? (
           <>
             <List />
-            {chatId && <Chat />}
-            {chatId && <Detail />}
+            {
+              chatId && (
+                <>
+                  <Chat />
+                  <Detail />
+                </>
+              )
+            }
           </>
         ) : (<LogIn />)
       }
