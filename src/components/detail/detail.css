@@ -41,15 +41,18 @@
 
                i {
                 font-size: 1.2rem;
-               }
-
-               span {
+                cursor: pointer;
+            }
+            
+            span {
                 font-size: 0.7rem;
+                cursor: pointer;
                }
             }
         }
 
         .option {
+            cursor: pointer;
 
             .title {
                 display: flex;

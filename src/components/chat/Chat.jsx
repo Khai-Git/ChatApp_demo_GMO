@@ -3,15 +3,15 @@ import "./Chat.css";
 import { useEffect, useRef, useState } from "react";
 import { arrayUnion, doc, onSnapshot, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../lib/firebase";
+import { toast } from "react-toastify";
 import useChatStore from "../lib/chatStore";
-
+import useUserStore from "../lib/userStore";
+import upload from "../lib/upload";
 import EmojiPicker from "emoji-picker-react";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { toast } from "react-toastify";
-import useUserStore from "../lib/userStore";
 
 const Chat = () => {
     const [chat, setChat] = useState();
@@ -46,15 +46,39 @@ const Chat = () => {
         setOpen(false);
     };
 
-    const handleImg = (e) => {
+    const handleImg = async (e) => {
         if (e.target.files[0]) {
-            setImg({
-                file: e.target.files[0],
-                url: URL.createObjectURL(e.target.files[0])
-            })
+            const file = e.target.files[0];
+            const url = URL.createObjectURL(file);
 
+            // Show the image preview immediately
+            setImg({ file, url });
+
+            try {
+                // Upload the image immediately
+                const imgURL = await upload(file);
+
+                // Automatically send the image after upload
+                await updateDoc(doc(db, "chats", chatId), {
+                    messages: arrayUnion({
+                        senderId: currentUser.id,
+                        text: "", // No text, only image
+                        createAt: new Date(),
+                        img: imgURL,
+                    }),
+                });
+
+                // Clear the image state after it's sent
+                setImg({
+                    file: null,
+                    url: "",
+                });
+            } catch (err) {
+                toast.warn(err.message);
+                console.error(err);
+            }
         }
-    }
+    };
 
     const handleSend = async () => {
         if (text === "") return;
@@ -102,7 +126,7 @@ const Chat = () => {
             <div className="header">
                 <div className="user">
                     <div className="avatar-user">
-                        <img src="./avatar.png" alt="" />
+                        <img src={user.avatar} alt="" />
                     </div>
                     <div className="texts">
                         <span>{user.username || "Unknown User"}</span>
@@ -128,21 +152,29 @@ const Chat = () => {
                         <div className="textAndTime">
                             {message.img && <img src={message.img} alt="Attached" />}
                             <p>{message.text}</p>
-                            <span>{new Date(message.createAt.seconds * 1000).toLocaleTimeString()}</span>
+                            <span>{new Date(message.createAt.seconds * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</span>
                         </div>
                     </div>
                 ))}
+                <div style={{display: "none"}}>
+                    {img.url && (
+                        <div className="message user">
+                            <div className="textAndTime">
+                                <img src={img.url} alt="Preview" />
+                            </div>
+                        </div>
+                    )}
+                </div>
 
                 <div ref={endRef}></div>
             </div>
-
 
             <div className="footer">
                 <div className="icons">
                     <label htmlFor="file">
                         <img src="./img.png" alt="" />
                     </label>
-                    <input type="file" id="file" style={{ display: "none" }} onChange={handleImg}/>
+                    <input type="file" id="file" style={{ display: "none" }} onChange={handleImg} />
                     <img src="./camera.png" alt="" />
                     <img src="./mic.png" alt="" />
                 </div>

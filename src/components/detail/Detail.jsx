@@ -1,8 +1,13 @@
+import useChatStore from "../lib/chatStore";
+import useUserStore from "../lib/userStore";
 import "./Detail.css";
 import { useState } from 'react';
 
 const Detail = () => {
     const [showPhotos, setShowPhotos] = useState(false);
+
+    const { chatId, user } = useChatStore();
+    const { currentUser } = useUserStore();
 
     const handleTogglePhotos = () => {
         setShowPhotos(prevState => !prevState);
@@ -11,8 +16,8 @@ const Detail = () => {
     return (
         <div className="detail">
             <div className="user">
-                <img src="./avatar.png" alt="" />
-                <h4>Kelvin</h4>
+                <img src={user.avatar} alt="" />
+                <h4>{user.username}</h4>
             </div>
             <div className="info">
                 <div className="quick-option">

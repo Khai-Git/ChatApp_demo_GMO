@@ -87,9 +87,9 @@
                 gap: 10px;
 
                 img {
-                    width: 100%;
-                    height: 300px;
-                    border-radius: 15px;
+                    max-width: 250px;
+                    height: auto;
+                    border-radius: 5px;
                     object-fit: cover;
                 }
 
@@ -132,6 +132,7 @@
 
         img {
             width: 25px;
+            cursor: pointer;
         }
     }
 
