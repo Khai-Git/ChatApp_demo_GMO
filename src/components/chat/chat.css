@@ -1,6 +1,7 @@
 .chat {
     flex: 2;
     max-width: 1000px;
+    min-width: 500px;
     display: flex;
     flex-direction: column;
 
@@ -51,6 +52,7 @@
 
             i {
                 font-size: 1.25rem;
+                cursor: pointer;
             }
         }
     }
@@ -142,6 +144,11 @@
         border: 1px solid #ddd;
         border-radius: 20px;
         outline: none;
+
+        &:disabled {
+            background-color: #5182feb4;
+            cursor: not-allowed;
+        }
     }
 
     .emoji {
@@ -166,5 +173,10 @@
         align-items: center;
         justify-content: center;
         border-radius: 15px;
+
+        &:disabled {
+            background-color: #5182feb4;
+            cursor: not-allowed;
+        }
     }
 }

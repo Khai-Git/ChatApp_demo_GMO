@@ -8,16 +8,17 @@ import useChatStore from "../../lib/chatStore";
 
 const ChatList = () => {
   const [selected, setSelected] = useState(null);
-  const [chats, setChats] = useState([]); // Always initialize as an array
+  const [chats, setChats] = useState([]);
   const [addMode, setAddMode] = useState(false);
+  const [input, setInput] = useState("");
 
   const { currentUser } = useUserStore();
-  const { chatId, changeChat } = useChatStore();  
+  const { chatId, changeChat } = useChatStore();
 
   const handleSelect = async (chat) => {
     if (!chat.chatID) {
       console.warn('Selected chat is missing chatID:', chat);
-      return; // Avoid selecting chats without a valid chatId
+      return;
     }
     changeChat(chat.chatID, chat.user);
   };
@@ -28,14 +29,14 @@ const ChatList = () => {
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "userchats", currentUser.id), async (res) => {
-      const items = res.data()?.chats || []; // Safely handle undefined data
+      const items = res.data()?.chats || [];
 
       const promises = items.map(async (item, index) => {
-        const receiverId = item.receiverId || item.reveiveId; // Fallback to 'reveiveId'
+        const receiverId = item.receiverId || item.reveiveId;
 
         if (!receiverId) {
           console.warn("Missing receiverId in chat item:", item);
-          return null; // Skip if no valid receiverId
+          return null;
         }
 
         try {
@@ -45,11 +46,11 @@ const ChatList = () => {
           return { ...item, user };
         } catch (error) {
           console.error("Error fetching user data:", error);
-          return null; // Skip failed user data fetch
+          return null;
         }
       });
 
-      const chatData = (await Promise.all(promises)).filter((chat) => chat !== null); // Filter out null values
+      const chatData = (await Promise.all(promises)).filter((chat) => chat !== null);
       setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
     });
 
@@ -58,12 +59,21 @@ const ChatList = () => {
     };
   }, [currentUser.id]);
 
+  const filteredChats = chats.filter(c =>
+    c.user?.username?.toLowerCase().includes(input.toLowerCase())
+  );
+
   return (
     <div className="chatList">
       <div className="search">
         <div className="searchBar">
           <img src="./search.png" alt="Search Icon" />
-          <input type="text" placeholder="Search" />
+          <input 
+            type="text" 
+            placeholder="Search" 
+            value={input} 
+            onChange={(e) => setInput(e.target.value)}
+          />
         </div>
         <img
           className="add"
@@ -74,18 +84,18 @@ const ChatList = () => {
       </div>
 
       <div className="items">
-        {chats?.map((chat, index) => (
+        {filteredChats?.map((chat, index) => (
           <div
             className={`item ${selected === index ? "selected" : ""}`}
-            key={chat.chatID || `chat-${index}`} // Fallback to index if chatID is missing
+            key={chat.chatID || `chat-${index}`}
             onClick={() => {
               handleSelectChat(index);
               handleSelect(chat);
             }}
           >
-            <img src={chat?.user?.avatar || "./default-avatar.png"} alt="User Avatar" />
+            <img src={chat?.user?.blocked.includes(currentUser.id) ? "./avatar.png" : chat?.user?.avatar || "./default-avatar.png"} alt="User Avatar" />
             <div className="texts">
-              <span>{chat?.user?.username || "Unknown User"}</span>
+              <span>{chat?.user?.blocked.includes(currentUser.id) ? "User" : chat?.user?.username}</span>
               <p>{chat.lastMessage || "No message"}</p>
             </div>
           </div>

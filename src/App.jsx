@@ -20,19 +20,23 @@ const App = () => {
       if (user) {
         fetchUserInfo(user.uid); // Fetch user info if authenticated
       } else {
-        // If not logged in, make sure isLoading is false
-        fetchUserInfo(null);
+        fetchUserInfo(null); // Set loading to false if no user
       }
     }, (error) => {
       console.error("Error in auth state change:", error);
-      // Ensure loading state is false even if there's an error
-      fetchUserInfo(null);
+      fetchUserInfo(null); // Ensure loading is false even on error
     });
 
     return () => {
       unSub();
     }
-  }, [fetchUserInfo]);  
+  }, [fetchUserInfo]);
+
+  useEffect(() => {
+    if (!isLoading && currentUser) {
+      // Additional login logic can go here if necessary
+    }
+  }, [currentUser, isLoading]);
 
   if (isLoading) return <div className='loading'>Loading...</div>;
 
@@ -43,20 +47,25 @@ const App = () => {
           <>
             <List />
             {
-              chatId && (
+              chatId ? (
+                // Renders the Chat component with the selected chatId
                 <>
-                  <Chat />
+                  <Chat key={chatId} />
                   <Detail />
                 </>
+              ) : (
+                // Initially renders a default welcome chat screen
+                <Chat key="default" />
               )
             }
           </>
-        ) : (<LogIn />)
+        ) : (
+          <LogIn />
+        )
       }
-
       <Notification />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -47,7 +47,10 @@
         height: 67vh;
         flex-wrap: wrap;
         flex-basis: 350px;
-        max-width: 350px;
+        max-width: 400px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
 
         .item {
             display: flex;
