@@ -16,7 +16,7 @@ const useChatStore = create((set) => ({
     if (user.blocked.includes(currentUser.id)) {
       return set({
         chatId,
-        user: null,
+        user,
         isCurrentUserBlocked: true,
         isReceiverBlocked: false,
       });
@@ -26,7 +26,7 @@ const useChatStore = create((set) => ({
     else if (currentUser.blocked.includes(user.id)) {
       return set({
         chatId,
-        user: null,
+        user: user,
         isCurrentUserBlocked: false,
         isReceiverBlocked: true,
       });
@@ -39,39 +39,38 @@ const useChatStore = create((set) => ({
       });
     }
   },
-  // changeBlock: () => {
-  //   set((state) => ({
-  //     ...state,
-  //     isReceiverBlocked: !state.isReceiverBlocked,
-  //   }));
-  // },
   changeBlock: async () => {
     const currentUser = useUserStore.getState().currentUser;
 
     set(async (state) => {
-        const newBlockedStatus = !state.isReceiverBlocked;
+      const newBlockedStatus = !state.isReceiverBlocked;
 
+      try {
         if (newBlockedStatus) {
-            // Add receiver to current user’s blocked list
-            await updateDoc(doc(db, "users", currentUser.id), {
-                blocked: arrayUnion(state.user.id), // Assuming user.id is the blocked user's ID
-            });
-            toast.warn("User blocked.");
+          // Add receiver to current user’s blocked list
+          await updateDoc(doc(db, "users", currentUser.id), {
+            blocked: arrayUnion(state.user.id), // Assuming user.id is the blocked user's ID
+          });
+          toast.warn("Người dùng đã bị chặn.");
         } else {
-            // Remove receiver from current user’s blocked list
-            await updateDoc(doc(db, "users", currentUser.id), {
-                blocked: arrayRemove(state.user.id),
-            });
-            toast.success("User unblocked.");
+          // Remove receiver from current user’s blocked list
+          await updateDoc(doc(db, "users", currentUser.id), {
+            blocked: arrayRemove(state.user.id),
+          });
+          toast.success("Người dùng đã tháo chặn.");
         }
 
         return {
-            ...state,
-            isReceiverBlocked: newBlockedStatus,
+          ...state,
+          isReceiverBlocked: newBlockedStatus,
         };
+      } catch (error) {
+        console.error(err);
+        toast.error("Có lỗi xảy ra khi thay đổi trạng thái chặn.");
+        return state;
+      }
     });
-},
-
+  },
 }));
 
 export default useChatStore;

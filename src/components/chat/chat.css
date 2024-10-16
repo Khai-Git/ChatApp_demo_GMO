@@ -1,9 +1,15 @@
 .chat {
     flex: 2;
-    max-width: 1000px;
-    min-width: 500px;
+    max-width: 924px;
+    min-width: 616px;
+    width: calc(100% - 308px); /* Adjust width calculation to include .detail when it's shown */
     display: flex;
     flex-direction: column;
+    transition: width 0.3s ease; /* Smooth transition when the width changes */
+
+    &.detail-open {
+        width: 616px; /* Shrinks chat when detail is open */
+    }
 
     .header {
         padding: 20px;
@@ -32,6 +38,8 @@
 
                 .status-icon {
                     font-size: 0.8rem;
+                    display: flex;
+                    gap: 5px;
                 }
 
                 .status-icon.online i {
@@ -40,7 +48,7 @@
                 }
 
                 .status-icon.offline i {
-                    color: red;
+                    color: gray;
                     margin-right: 10px;
                 }
             }
@@ -60,6 +68,7 @@
     .main {
         flex: 1;
         padding: 20px;
+        height: 100%;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
@@ -179,4 +188,17 @@
             cursor: not-allowed;
         }
     }
+}
+
+.detail {
+    width: 308px;
+    transition: width 0.3s ease; /* Smooth transition when detail opens */
+}
+
+.detail-closed {
+    display: none; /* Hide the detail when it's closed */
+}
+
+.epr-icn-search.epr_-9drodb.epr_-adzx3s.epr_-iv59kr.epr_x3ies4.epr_xfv07x.epr_-quh3ie.epr_-ho5tjb.epr_-twh8ru.epr_-315v0j.epr_nlnaq9.epr_i3a6gx.epr_xexhgb {
+    display: none;
 }

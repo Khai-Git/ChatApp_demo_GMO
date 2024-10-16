@@ -76,10 +76,24 @@
                     font-weight: 500;
                 }
 
+                .user {
+                    display: flex;
+                    gap: 10px;
+
+                    .status {
+                        display: flex;
+                        gap: 5px;
+                    }
+                }
+
                 p {
                     margin: 0;
                     font-size: 1rem;
                     font-weight: 300;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    width: 15vw;
                 }
             }
         }

@@ -32,7 +32,7 @@ const ChatList = () => {
       const items = res.data()?.chats || [];
 
       const promises = items.map(async (item, index) => {
-        const receiverId = item.receiverId || item.reveiveId;
+        const receiverId = item.receiverId || item.receiveId;
 
         if (!receiverId) {
           console.warn("Missing receiverId in chat item:", item);
@@ -68,10 +68,10 @@ const ChatList = () => {
       <div className="search">
         <div className="searchBar">
           <img src="./search.png" alt="Search Icon" />
-          <input 
-            type="text" 
-            placeholder="Search" 
-            value={input} 
+          <input
+            type="text"
+            placeholder="Search"
+            value={input}
             onChange={(e) => setInput(e.target.value)}
           />
         </div>
@@ -93,11 +93,32 @@ const ChatList = () => {
               handleSelect(chat);
             }}
           >
-            <img src={chat?.user?.blocked.includes(currentUser.id) ? "./avatar.png" : chat?.user?.avatar || "./default-avatar.png"} alt="User Avatar" />
+            <img src={chat?.user?.blocked.includes(currentUser.id) ? "./avatar.png" : chat?.user?.avatar || "./avatar-user.png"} alt="User Avatar" />
             <div className="texts">
-              <span>{chat?.user?.blocked.includes(currentUser.id) ? "User" : chat?.user?.username}</span>
-              <p>{chat.lastMessage || "No message"}</p>
+              <div className="user">
+                <span>{chat?.user?.blocked.includes(currentUser.id) ? "User" : chat?.user?.username}</span>
+                <div className="status">
+                  <i className="bi bi-circle-fill" style={{ color: chat?.user?.isOnline ? "green" : "gray" }}></i>
+                  {chat?.user?.isOnline ? "Online" : "Offline"}
+                </div>
+              </div>
+              <p>
+                {chat.lastMessage.text == "" ? "aaa" : chat.lastMessage || "No message"}
+                {/* {
+                  chat.lastMessage
+                    ? chat.lastMessage.img
+                      ? (
+                        <p>
+                          <i className="bi bi-image" style={{ marginRight: "5px" }}></i>
+                          Picture
+                        </p>
+                      )
+                      : chat.lastMessage.text || "No message"
+                    : "No message"
+                } */}
+              </p>
             </div>
+
           </div>
         ))}
       </div>

@@ -11,10 +11,10 @@ const userInfo = () => {
                 <img src={currentUser.avatar || './avatar.png'} alt="" />
                 <h4>{currentUser.username}</h4>
             </div>
-            <div className="icons">
+            {/* <div className="icons">
                 <img src="./more.png" alt="" />
                 <img src="./edit.png" alt="" />
-            </div>
+            </div> */}
         </div>
     );
 }

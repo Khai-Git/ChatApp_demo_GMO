@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import LogIn from "./components/login/Login";
 import Chat from "./components/chat/Chat";
 import Detail from "./components/detail/Detail";
@@ -16,15 +16,16 @@ const App = () => {
   const { chatId } = useChatStore();
 
   useEffect(() => {
-    const unSub = onAuthStateChanged(auth, (user) => {
+    const unSub = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        fetchUserInfo(user.uid); // Fetch user info if authenticated
+        fetchUserInfo(user.uid);
       } else {
-        fetchUserInfo(null); // Set loading to false if no user
+        await signOut(auth);
+        fetchUserInfo(null);
       }
     }, (error) => {
       console.error("Error in auth state change:", error);
-      fetchUserInfo(null); // Ensure loading is false even on error
+      fetchUserInfo(null);
     });
 
     return () => {
@@ -32,11 +33,9 @@ const App = () => {
     }
   }, [fetchUserInfo]);
 
-  useEffect(() => {
-    if (!isLoading && currentUser) {
-      // Additional login logic can go here if necessary
-    }
-  }, [currentUser, isLoading]);
+  const handleConversationDeleted = (deletedChatId) => {
+    console.log(`Cuộc trò chuyện với chatID ${deletedChatId} dã bị xóa.`);
+  };
 
   if (isLoading) return <div className='loading'>Loading...</div>;
 
@@ -45,17 +44,18 @@ const App = () => {
       {
         currentUser ? (
           <>
-            <List />
+            <List handleConversationDeleted={handleConversationDeleted} />
             {
               chatId ? (
-                // Renders the Chat component with the selected chatId
                 <>
                   <Chat key={chatId} />
-                  <Detail />
+                  <Detail handleConversationDeleted={handleConversationDeleted} />
                 </>
               ) : (
-                // Initially renders a default welcome chat screen
-                <Chat key="default" />
+                <>
+                  <Chat key="default" />
+                  <Detail />
+                </>
               )
             }
           </>
