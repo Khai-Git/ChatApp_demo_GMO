@@ -13,11 +13,11 @@ const ChatList = () => {
   const [input, setInput] = useState("");
 
   const { currentUser } = useUserStore();
-  const { chatId, changeChat } = useChatStore();
+  const { chatId, setChatId, changeChat } = useChatStore();
 
   const handleSelect = async (chat) => {
     if (!chat.chatID) {
-      console.warn('Selected chat is missing chatID:', chat);
+      console.warn('Cuộc trò chuyện không tìm thấy chatID:', chat);
       return;
     }
     changeChat(chat.chatID, chat.user);
@@ -35,7 +35,6 @@ const ChatList = () => {
         const receiverId = item.receiverId || item.receiveId;
 
         if (!receiverId) {
-          console.warn("Missing receiverId in chat item:", item);
           return null;
         }
 
@@ -45,19 +44,24 @@ const ChatList = () => {
           const user = userDocSnap.data();
           return { ...item, user };
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error(error);
           return null;
         }
       });
 
       const chatData = (await Promise.all(promises)).filter((chat) => chat !== null);
+      // Handle case when a chat is deleted and the current chat is no longer valid
+      if (chatId && !chatData.find((chat) => chat.chatID === chatId)) {
+        setChatId(null); // Reset chatId if the current chat is deleted
+        setSelected(null); // Reset selected chat index
+      }
       setChats(chatData.sort((a, b) => b.updateAt - a.updateAt));
     });
 
     return () => {
       unSub();
     };
-  }, [currentUser.id]);
+  }, [currentUser.id, chatId, setChatId]);
 
   const filteredChats = chats.filter(c =>
     c.user?.username?.toLowerCase().includes(input.toLowerCase())
@@ -70,18 +74,23 @@ const ChatList = () => {
           <img src="./search.png" alt="Search Icon" />
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Tìm kiếm bạn bè"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
         </div>
-        <img
-          className="add"
-          src={addMode ? "./minus.png" : "./plus.png"}
-          alt="Toggle Add"
-          onClick={() => setAddMode((state) => !state)}
-        />
+        <div className="add-container">
+          <img
+            className="add"
+            src={addMode ? "./minus.png" : "./plus.png"}
+            alt="Toggle Add"
+            onClick={() => setAddMode((state) => !state)}
+          />
+          <span className="tooltip">Thêm cuộc trò chuyện</span>
+        </div>
+
       </div>
+
 
       <div className="items">
         {filteredChats?.map((chat, index) => (
@@ -103,7 +112,7 @@ const ChatList = () => {
                 </div>
               </div>
               <p>
-                {chat.lastMessage.text == "" ? "aaa" : chat.lastMessage || "No message"}
+                { chat.lastMessage || "No message" }
                 {/* {
                   chat.lastMessage
                     ? chat.lastMessage.img
@@ -122,7 +131,7 @@ const ChatList = () => {
           </div>
         ))}
       </div>
-      {addMode && <AddUser />}
+      {addMode && <AddUser setAddMode={setAddMode} />}
     </div>
   );
 };

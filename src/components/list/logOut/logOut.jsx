@@ -1,7 +1,7 @@
 import { auth } from "../../lib/firebase";
 import "./logout.css";
 
-const logOut = () => {
+const LogOut = () => {
     return (
         <div className="logOut">
             <button className="btn btn-outline-danger" onClick={() => auth.signOut()}>Đăng xuất</button>
@@ -9,4 +9,4 @@ const logOut = () => {
     );
 }
 
-export default logOut;
+export default LogOut;

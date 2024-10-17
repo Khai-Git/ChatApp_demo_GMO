@@ -26,6 +26,10 @@ const useUserStore = create((set) => ({
       set({ currentUser: null, isLoading: false }); // Ensure isLoading is set to false
     }
   },
+  // Manually set current user (for logout or other reasons)
+  setCurrentUser: (user) => {
+    set({ currentUser: user });
+  },
 }));
 
 export default useUserStore;

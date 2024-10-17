@@ -1,6 +1,6 @@
 import "./List.css";
 
-import UserInfo from "./userInfo/userInfo";
+import UserInfo from "./userInfo/UserInfo";
 import ChatList from "./chatList/ChatLists";
 import LogOut from "./logOut/logOut";
 

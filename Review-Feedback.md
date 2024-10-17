@@ -1,0 +1,77 @@
+## Review
+
+### Luồng chính đăng nhập/đăng xuất, chat giữa các account => OK
+
+### Còn 1 số chổ sửa lại cho hoàn thiện:
+1. Sửa format các file `Indent Using Spaces` thành 2
+![Alt text](reviewImage/BugFormat.png) X
+
+2. Xóa các space dư thừa trong các file
+![Alt text](reviewImage/TrimWhitespace.png) X
+
+<!-- Login.jsx -->
+3. Đăng ký thành công => chưa xóa data form X
+
+4. Bug đăng ký tài khoản trùng email hiện hết lỗi từ firebase lên web là chết rồi
+![Alt text](reviewImage/BugDangKyTrungEmail.png) X
+
+5. Đoạn code này có tác dụng gì?
+![Alt text](reviewImage/BugLogin_1.png) X
+
+5.1 --> Sau khi user a chọn user b để tạo một cuộc trò chuyện thì khi này chats sẽ được tạo ra để a và b có thể chat được với nhau.
+
+6. Xác nhận mật khẩu trong code không có xử lý => Không cần hiện lên UI làm gì
+![Alt text](reviewImage/BugLogin_2.png) x
+
+7. Thêm accept chỉ được chọn đuôi file ảnh
+![Alt text](reviewImage/BugLogin_3.png) X
+
+8. 
+- Dời vị trí hiện toast lên trên đầu màn hình, để dưới cuối màn hình hơi khó thấy X (đã di chuyển lên trên (top-right))
+- Bắt đúng sự kiện để hiện lỗi lên màn hình => Không hiện lỗi của firebase lên web X
+Ví dụ như trong ảnh lỗi `INVALID_EMAIL`
+=> Tên đăng nhập hoặc mật khẩu không đúng
+![Alt text](reviewImage/BugLogin_4.png) X
+
+9. Cải thiện mấy cái text để tránh nhầm lẫn giữa tài khoản đăng nhập và tên user hiển thị
+- 1. Chổ đăng nhập để text `Email` X
+- 2. Chổ đăng ký để text `Tên tài khoản` X
+![Alt text](reviewImage/BugLogin_5.png) X
+
+<!-- UserInfo.jsx -->
+10. Viết hoa chữ cái đầu, sửa tương tự cho logOut (sửa tên hàm + tên file)
+![Alt text](reviewImage/BugCodeConvention_1.png) X
+
+<!-- ChatLists.jsx -->
+11. 
+- Thêm label vào "Danh sách hội thoại"  chẳng hạn X
+- Dấu `+`, `-` này có tác dụng gì (không có label thì cũng phải gắn tooltip giải thích ý nghĩa vô) X
+![Alt text](reviewImage/BugChatList_1.png) X
+
+<!-- AddUser.jsx -->
+12. Đặt câu hỏi, xong tự trả lời cho các chức năng mình làm
+**Gợi ý:**
+- Dialog này có tác dụng gì?
+  - Thêm title (giải thích ý nghĩa của dialog) vào header của dialog X
+  - Thêm nút đóng dialog X
+- Nút Search có tác dụng gì?
+  - Thêm 1 dòng text nhập username để thêm mới cuộc trò chuyện chẳng hạn X
+  - Khi search không có data => hiển thị không tìm thấy username này X
+  - Trên UI click vào mà không mở payload thì không biết nó có hoạt động luôn ấy => Gắn màn hình Loading vô khi có thao tác call api X
+
+![Alt text](reviewImage/BugChatList_2.png) X
+
+13. 
+- UI bị lệch giữa 2 button X
+- Khi thêm thành công => hiện toast thành công, tắt luôn dialog X
+![Alt text](reviewImage/BugAddUser_1.png) X
+
+<!-- Detail.jsx -->
+14. Nút `Xóa cuộc trò chuyện` bổ sung thêm dialog `Xác nhận xóa cuộc trò chuyện`, khi click Xóa thì mới call api xóa X
+
+15. Vừa đăng nhập vào, không có cuộc hội thoại nào => cục bên phải này ẩn luôn X
+![Alt text](reviewImage/BugUI_1.png) X
+
+16. Bug khi đăng xuất => đăng nhập lại bằng tài khoản khác X
+[BugLoadDetailChat.webm](reviewImage/BugLoadDetailChat.webm) X
+[BugLoadDetailChat_2.webm](reviewImage/BugLoadDetailChat_2.webm) X

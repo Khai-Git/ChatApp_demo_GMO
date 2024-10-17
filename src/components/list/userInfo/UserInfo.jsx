@@ -2,7 +2,7 @@ import "./userInfo.css";
 
 import useUserStore from "../../lib/userStore";
 
-const userInfo = () => {
+const UserInfo = () => {
     const {currentUser} = useUserStore();
 
     return (
@@ -19,4 +19,4 @@ const userInfo = () => {
     );
 }
 
-export default userInfo;
+export default UserInfo;

@@ -71,6 +71,7 @@ const useChatStore = create((set) => ({
       }
     });
   },
+  setChatId: (chatId) => set({ chatId }),
 }));
 
 export default useChatStore;
